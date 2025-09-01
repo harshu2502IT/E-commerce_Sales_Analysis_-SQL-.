@@ -1,44 +1,59 @@
-# Retail Sales Analysis SQL Project
+# E-commerce dataset for SQL analysis
 
 ## Project Overview
 
-**Project Title**: Retail Sales Analysis  
+**Project Title**: Ecommerce Dataset Analysis  
 **Level**: Beginner  
-**Database**: `p1_retail_db`
+**Database**: `SALES`
 
-This project is designed to demonstrate SQL skills and techniques typically used by data analysts to explore, clean, and analyze retail sales data. The project involves setting up a retail sales database, performing exploratory data analysis (EDA), and answering specific business questions through SQL queries. This project is ideal for those who are starting their journey in data analysis and want to build a solid foundation in SQL.
+This project is designed to demonstrate SQL and data analysis skills using a real-world style E-commerce dataset. It focuses on simulating tasks that a data analyst would typically perform when working with online retail data.
 
-## Objectives
+The project involves:
 
-1. **Set up a retail sales database**: Create and populate a retail sales database with the provided sales data.
-2. **Data Cleaning**: Identify and remove any records with missing or null values.
-3. **Exploratory Data Analysis (EDA)**: Perform basic exploratory data analysis to understand the dataset.
-4. **Business Analysis**: Use SQL to answer specific business questions and derive insights from the sales data.
+Setting up an E-commerce database from raw CSV data
+
+Performing Exploratory Data Analysis (EDA) using SQL and Python (pandas, matplotlib)
+
+Writing SQL queries to answer specific business questions (sales trends, top products, customer insights, payment preferences, etc.)
+
+Applying data cleaning and transformation techniques where required
+
+This project is ideal for beginner to intermediate data analysts who want to practice SQL and EDA techniques, and it serves as a strong portfolio project to showcase SQL proficiency.
+
+## Objectives  
+
+1. **Set up an E-commerce database**: Create and populate an E-commerce sales database with the provided dataset.  
+2. **Data Cleaning**: Detect and handle missing, inconsistent, or duplicate records to ensure data quality.  
+3. **Exploratory Data Analysis (EDA)**: Perform exploratory analysis using SQL and Python to uncover patterns in customer behavior, sales, and product performance.
 
 ## Project Structure
 
 ### 1. Database Setup
 
-- **Database Creation**: The project starts by creating a database named `p1_retail_db`.
-- **Table Creation**: A table named `retail_sales` is created to store the sales data. The table structure includes columns for transaction ID, sale date, sale time, customer ID, gender, age, product category, quantity sold, price per unit, cost of goods sold (COGS), and total sale amount.
+- **Database Creation**: The project starts by creating a database named `SALES`.
+- **Table Creation**: A table named `ecommerce_dataset_10000` is created to store the sales data. The table structure includes columns for customer_id, first_name, last_name, gender, age_group, signup_date, country, product_id, product_name, category, quantity, unit_price, order_id, order_date, order_status, payment_method, rating,review_text.
 
 ```sql
-CREATE DATABASE p1_retail_db;
+CREATE DATABASE SALES;
 
-CREATE TABLE retail_sales
-(
-    transactions_id INT PRIMARY KEY,
-    sale_date DATE,	
-    sale_time TIME,
-    customer_id INT,	
-    gender VARCHAR(10),
-    age INT,
-    category VARCHAR(35),
+CREATE TABLE ECOMMERCE_DATASET_10000 (
+    gender TEXT,
+    age_group TEXT,
+    signup_date DATE,
+    country TEXT,
+    product_id VARCHAR(50),
+    product_name TEXT,
+    category TEXT,
     quantity INT,
-    price_per_unit FLOAT,	
-    cogs FLOAT,
-    total_sale FLOAT
+    unit_price INT,
+    order_id VARCHAR(50),
+    order_date DATE,
+    order_status TEXT,
+    payment_method TEXT,
+    rating INT,
+    review_text TEXT
 );
+
 ```
 
 ### 2. Data Exploration & Cleaning
@@ -49,179 +64,253 @@ CREATE TABLE retail_sales
 - **Null Value Check**: Check for any null values in the dataset and delete records with missing data.
 
 ```sql
-SELECT COUNT(*) FROM retail_sales;
-SELECT COUNT(DISTINCT customer_id) FROM retail_sales;
-SELECT DISTINCT category FROM retail_sales;
+SELECT *
+FROM ECOMMERCE_DATASET_10000
+WHERE customer_id IS NULL
+OR	
+first_name IS NULL
+OR	
+last_name IS NULL
+OR	
+gender IS NULL
+OR
+age_group IS NULL
+OR	
+signup_date IS NULL
+OR	
+country IS NULL
+OR	
+product_id IS NULL
+OR	
+product_name IS NULL
+OR	
+category IS NULL
+OR	
+quantity IS NULL
+OR	
+unit_price IS NULL
+OR
+order_id IS NULL
+OR	
+order_date IS NULL
+OR	
+order_status IS NULL
+OR	
+payment_method IS NULL
+OR	
+rating IS NULL
+OR
+review_text	IS NULL
+OR
+review_id IS NULL
+OR
+review_date IS NULL;
 
-SELECT * FROM retail_sales
-WHERE 
-    sale_date IS NULL OR sale_time IS NULL OR customer_id IS NULL OR 
-    gender IS NULL OR age IS NULL OR category IS NULL OR 
-    quantity IS NULL OR price_per_unit IS NULL OR cogs IS NULL;
-
-DELETE FROM retail_sales
-WHERE 
-    sale_date IS NULL OR sale_time IS NULL OR customer_id IS NULL OR 
-    gender IS NULL OR age IS NULL OR category IS NULL OR 
-    quantity IS NULL OR price_per_unit IS NULL OR cogs IS NULL;
 ```
 
 ### 3. Data Analysis & Findings
 
 The following SQL queries were developed to answer specific business questions:
 
-1. **Write a SQL query to retrieve all columns for sales made on '2022-11-05**:
-```sql
-SELECT *
-FROM retail_sales
-WHERE sale_date = '2022-11-05';
-```
-
-2. **Write a SQL query to retrieve all transactions where the category is 'Clothing' and the quantity sold is more than 4 in the month of Nov-2022**:
+1. **Show all customers from India.**:
 ```sql
 SELECT 
-  *
-FROM retail_sales
-WHERE 
-    category = 'Clothing'
-    AND 
-    TO_CHAR(sale_date, 'YYYY-MM') = '2022-11'
-    AND
-    quantity >= 4
+    FIRST_NAME, LAST_NAME, COUNTRY
+FROM
+    ECOMMERCE_DATASET_10000
+WHERE
+    COUNTRY = 'INDIA';
 ```
 
-3. **Write a SQL query to calculate the total sales (total_sale) for each category.**:
+2. **List all unique product categories.**:
+```sql
+SELECT DISTINCT
+    PRODUCT_NAME
+FROM
+    ECOMMERCE_DATASET_1000;
+```
+
+3. **Find total number of customers by gender.**:
 ```sql
 SELECT 
-    category,
-    SUM(total_sale) as net_sale,
-    COUNT(*) as total_orders
-FROM retail_sales
+    GENDER, COUNT(*) AS TOTAL_COUSTOMER
+FROM
+    ECOMMERCE_DATASET_10000
+GROUP BY GENDER;
+```
+
+4. **Find the top 5 most expensive products.**:
+```sql
+SELECT 
+    product_name, unit_price
+FROM
+    ECOMMERCE_DATASET_10000
+ORDER BY 2 DESC
+LIMIT 5;
+```
+
+5. **Get the total sales (quantity × unit_price).**:
+```sql
+SELECT 
+    COUNTRY, SUM(quantity * unit_price) AS TOTAL_SALES
+FROM
+    ECOMMERCE_DATASET_10000;
+```
+
+6. **Get the  top 5 hightest total sales perticular country**:
+```sql
+SELECT 
+    COUNTRY , SUM(quantity * unit_price) AS TOTAL_SALES
+FROM
+    ECOMMERCE_DATASET_10000
+GROUP BY COUNTRY
+ORDER BY 2 DESC
+LIMIT 5;
+```
+
+7. **Find the number of orders per country.**:
+```sql
+SELECT 
+    COUNTRY, COUNT(DISTINCT (ORDER_ID)) AS TOTAL_ORDER
+FROM
+    ECOMMERCE_DATASET_10000
+GROUP BY COUNTRY;
+```
+
+8. **Find the average rating per product. **:
+```sql
+SELECT DISTINCT
+    product_name, ROUND(AVG(RATING), 2)
+FROM
+    ECOMMERCE_DATASET_10000
+GROUP BY product_name
+ORDER BY 2 DESC;
+```
+
+9. **Find customers who placed more than 5 orders.**:
+```sql
+SELECT 
+    FIRST_NAME, COUNT(DISTINCT (order_ID)) AS TOTAL_ORDERS
+FROM
+    ECOMMERCE_DATASET_10000
 GROUP BY 1
+HAVING COUNT(DISTINCT (ORDER_ID)) > 5;
 ```
 
-4. **Write a SQL query to find the average age of customers who purchased items from the 'Beauty' category.**:
+10. **Find the most popular payment method.**:
 ```sql
-SELECT
-    ROUND(AVG(age), 2) as avg_age
-FROM retail_sales
-WHERE category = 'Beauty'
-```
-
-5. **Write a SQL query to find all transactions where the total_sale is greater than 1000.**:
-```sql
-SELECT * FROM retail_sales
-WHERE total_sale > 1000
-```
-
-6. **Write a SQL query to find the total number of transactions (transaction_id) made by each gender in each category.**:
-```sql
-SELECT 
-    category,
-    gender,
-    COUNT(*) as total_trans
-FROM retail_sales
-GROUP 
-    BY 
-    category,
-    gender
-ORDER BY 1
-```
-
-7. **Write a SQL query to calculate the average sale for each month. Find out best selling month in each year**:
-```sql
-SELECT 
-       year,
-       month,
-    avg_sale
-FROM 
-(    
-SELECT 
-    EXTRACT(YEAR FROM sale_date) as year,
-    EXTRACT(MONTH FROM sale_date) as month,
-    AVG(total_sale) as avg_sale,
-    RANK() OVER(PARTITION BY EXTRACT(YEAR FROM sale_date) ORDER BY AVG(total_sale) DESC) as rank
-FROM retail_sales
-GROUP BY 1, 2
-) as t1
-WHERE rank = 1
-```
-
-8. **Write a SQL query to find the top 5 customers based on the highest total sales **:
-```sql
-SELECT 
-    customer_id,
-    SUM(total_sale) as total_sales
-FROM retail_sales
+SELECT DISTINCT
+    payment_method, COUNT(payment_method) AS METHODS
+FROM
+    ECOMMERCE_DATASET_10000
 GROUP BY 1
 ORDER BY 2 DESC
-LIMIT 5
+LIMIT 1;
 ```
 
-9. **Write a SQL query to find the number of unique customers who purchased items from each category.**:
+11. **Find top 5 customers who spent the most money.**:
 ```sql
 SELECT 
-    category,    
-    COUNT(DISTINCT customer_id) as cnt_unique_cs
-FROM retail_sales
-GROUP BY category
+    CUSTOMER_ID, SUM(quantity * unit_price) AS MOEY_SPEND
+FROM
+    ECOMMERCE_DATASET_10000
+GROUP BY 1
+ORDER BY 2 DESC
+LIMIT 5; 
+
+```
+12. **Find the average unit price of each category.**:
+```sql
+SELECT DISTINCT
+    category, AVG(UNIT_PRICE) AS AVG_PRICE
+FROM
+    ECOMMERCE_DATASET_10000
+GROUP BY CATEGORY;
 ```
 
-10. **Write a SQL query to create each shift and number of orders (Example Morning <12, Afternoon Between 12 & 17, Evening >17)**:
+13. **Get the top 10 products with the highest total sales.**:
 ```sql
-WITH hourly_sale
-AS
-(
-SELECT *,
-    CASE
-        WHEN EXTRACT(HOUR FROM sale_time) < 12 THEN 'Morning'
-        WHEN EXTRACT(HOUR FROM sale_time) BETWEEN 12 AND 17 THEN 'Afternoon'
-        ELSE 'Evening'
-    END as shift
-FROM retail_sales
-)
 SELECT 
-    shift,
-    COUNT(*) as total_orders    
-FROM hourly_sale
-GROUP BY shift
+    product_name, SUM((unit_price * quantity)) AS sales
+FROM
+    ECOMMERCE_DATASET_10000
+GROUP BY 1
+ORDER BY 2 DESC
+LIMIT 10;
+```
+
+14. **Find the most sold product in each category.**:
+```sql
+SELECT DISTINCT DISTINCT
+    (PRODUCT_NAME), CATEGORY, SUM(QUANTITY) AS MOST_SOLD
+FROM
+    ECOMMERCE_DATASET_10000
+GROUP BY 1,2
+ORDER BY 1,3 DESC;
+```
+
+15. **Find the top 3 products in each category based on sales.**:
+```sql
+SELECT DISTINCT
+    (PRODUCT_NAME),
+    CATEGORY,
+    SUM(quantity * unit_price) AS TOTAL_SALES
+FROM
+    ECOMMERCE_DATASET_10000
+GROUP BY 1 , 2
+ORDER BY 3 DESC
+LIMIT 3;
+```
+
+16. **Find the month with the highest sales.**:
+```sql
+SELECT 
+    SUM(quantity * unit_price) AS SALES,
+    EXTRACT(MONTH FROM order_date) AS MONTH
+FROM
+    ECOMMERCE_DATASET_10000
+GROUP BY 2
+ORDER BY 1 DESC
+LIMIT 1; 
+```
+
+17. **Find the top 5 countries with the highest number of unique customers.**:
+```sql
+SELECT 
+    COUNTRY, COUNT(DISTINCT (customer_id)) AS NUMBER_CUSTOMER
+FROM
+    ECOMMERCE_DATASET_10000
+GROUP BY 1
+ORDER BY 2 DESC
+LIMIT 5;
+```
+
+18. **Find customers who gave the lowest rating but spent the most money.**:
+```sql
+SELECT 
+    CUSTOMER_ID,
+    MIN(RATING) AS MINIMUME_RATING,
+    SUM(unit_price * quantity) AS MOST_SPEND
+FROM
+    ECOMMERCE_DATASET_10000
+GROUP BY 1
+ORDER BY 2 ASC , 3 DESC;
 ```
 
 ## Findings
 
-- **Customer Demographics**: The dataset includes customers from various age groups, with sales distributed across different categories such as Clothing and Beauty.
-- **High-Value Transactions**: Several transactions had a total sale amount greater than 1000, indicating premium purchases.
-- **Sales Trends**: Monthly analysis shows variations in sales, helping identify peak seasons.
-- **Customer Insights**: The analysis identifies the top-spending customers and the most popular product categories.
+- **Customer Demographics**: The dataset covers customers across multiple countries, genders, and age groups, providing insights into purchasing behaviors.
+- **High-Value Transactions**: Certain orders recorded a high total sale amount, indicating premium purchases and loyal customers.
+- **Sales Trends**: Monthly and seasonal sales trends highlight peak shopping periods and shifts in demand.
+- **Customer Insights**: Analysis revealed the top-spending customers, preferred payment methods, and the most popular product categories.
 
 ## Reports
 
-- **Sales Summary**: A detailed report summarizing total sales, customer demographics, and category performance.
-- **Trend Analysis**: Insights into sales trends across different months and shifts.
-- **Customer Insights**: Reports on top customers and unique customer counts per category.
+- **E-commerce Sales Summary**: Summary of total revenue, order volumes, and product category performance.
+- **Trend Analysis**: Insights into how sales vary by month, season, and customer demographics.
+- **Customer Insights**: Reports identifying top buyers, frequently purchased products, and preferred payment methods.
+- **Product Performance**: Analysis of product ratings, returns, and reviews to evaluate customer satisfaction.
 
 ## Conclusion
 
-This project serves as a comprehensive introduction to SQL for data analysts, covering database setup, data cleaning, exploratory data analysis, and business-driven SQL queries. The findings from this project can help drive business decisions by understanding sales patterns, customer behavior, and product performance.
-
-## How to Use
-
-1. **Clone the Repository**: Clone this project repository from GitHub.
-2. **Set Up the Database**: Run the SQL scripts provided in the `database_setup.sql` file to create and populate the database.
-3. **Run the Queries**: Use the SQL queries provided in the `analysis_queries.sql` file to perform your analysis.
-4. **Explore and Modify**: Feel free to modify the queries to explore different aspects of the dataset or answer additional business questions.
-
-## Author - Zero Analyst
-
-This project is part of my portfolio, showcasing the SQL skills essential for data analyst roles. If you have any questions, feedback, or would like to collaborate, feel free to get in touch!
-
-### Stay Updated and Join the Community
-
-For more content on SQL, data analysis, and other data-related topics, make sure to follow me on social media and join our community:
-
-- **YouTube**: [Subscribe to my channel for tutorials and insights](https://www.youtube.com/@zero_analyst)
-- **Instagram**: [Follow me for daily tips and updates](https://www.instagram.com/zero_analyst/)
-- **LinkedIn**: [Connect with me professionally](https://www.linkedin.com/in/najirr)
-- **Discord**: [Join our community to learn and grow together](https://discord.gg/36h5f2Z5PK)
-
-Thank you for your support, and I look forward to connecting with you!
+This project showcases SQL skills for data analysts by setting up an e-commerce database, cleaning data, performing exploratory data analysis (EDA), and answering business questions through SQL queries. The findings provide valuable insights into customer behavior, sales trends, and product performance, which can be leveraged by businesses to improve marketing strategies, inventory management, and customer experience.
