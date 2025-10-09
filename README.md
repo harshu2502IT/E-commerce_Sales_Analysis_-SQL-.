@@ -311,6 +311,15 @@ ORDER BY 2 ASC , 3 DESC;
 - **Customer Insights**: Reports identifying top buyers, frequently purchased products, and preferred payment methods.
 - **Product Performance**: Analysis of product ratings, returns, and reviews to evaluate customer satisfaction.
 
+
+🧑‍💻 Author
+
+Your Name
+📧 [barkuleharsh205@gmail.com]
+💼 Data Analyst | SQL Developer | Student Project Enthusiast
+
+
+
 ## Conclusion
 
 This project showcases SQL skills for data analysts by setting up an e-commerce database, cleaning data, performing exploratory data analysis (EDA), and answering business questions through SQL queries. The findings provide valuable insights into customer behavior, sales trends, and product performance, which can be leveraged by businesses to improve marketing strategies, inventory management, and customer experience.
